@@ -6,41 +6,11 @@
 
 <h1>Editor</h1>
 
-@* <p>Editor ver: @version</p> *@
-
 <MatTextField @bind-Value="@codeString" Label="Code" TextArea="true" FullWidth="true" Rows="10"></MatTextField>
-@* <MatButton OnClick="@(() => dialogIsOpen = true)">Compile and Run</MatButton> *@
 <MatButton OnClick="@CompileRun">Compile and Run</MatButton>
 <MatTextField @bind-Value="@outputString" Label="Output" TextArea="true" FullWidth="true" Rows="10" ReadOnly="true"></MatTextField>
 
-@* <button class="btn btn-primary" @onclick="IncrementVersion">Click me</button> *@
-
-        <MatDialog @bind-IsOpen="@dialogIsOpen">
-            <MatDialogTitle>Compile</MatDialogTitle>
-            <MatDialogContent>
-                <p>Not implemented yet...</p>
-                @* <MatTextField @bind-Value="@dialogMessage"></MatTextField> *@
-            </MatDialogContent>
-            <MatDialogActions>
-                <MatButton OnClick="(e => { dialogIsOpen = false; })">Cancel</MatButton>
-				&nbsp;&nbsp;
-                <MatButton Raised="true" OnClick="CompileRun">Compile Run</MatButton>
-            </MatDialogActions>
-        </MatDialog>
-
-
 @code {
-	@* public string CodeString
-	{
-		get => _codeString;
-		set
-		{
-			_codeString = value;
-			this.StateHasChanged();
-		}
-	}
-
-	private string _codeString; *@
 	private string codeString = @"// sample vm1 assembly
 iconst 42
 call FUNC: 1
@@ -50,29 +20,27 @@ load -3
 print
 ret
 ";
-    private bool dialogIsOpen = false;
-    private string outputString = "";
-    //private string dialogMessage;
+	private string outputString = "";
 
-public static Stream GenerateStreamFromString(string s)
-{
-    var stream = new MemoryStream();
-    var writer = new StreamWriter(stream);
-    writer.Write(s);
-    writer.Flush();
-    stream.Position = 0;
-    return stream;
-}
+	public static Stream GenerateStreamFromString(string s)
+	{
+		var stream = new MemoryStream();
+		var writer = new StreamWriter(stream);
+		writer.Write(s);
+		writer.Flush();
+		stream.Position = 0;
+		return stream;
+	}
 
-    private void CompileRun()
-    {
+	private void CompileRun()
+	{
 			using (Stream s = GenerateStreamFromString(codeString))
-            using (StreamReader sr = new StreamReader(s))
+			using (StreamReader sr = new StreamReader(s))
 			using(MemoryStream ms = new MemoryStream())
-            {
+			{
 				// assemble
-                AsmCompiler c = new AsmCompiler();
-                c.Run(new AntlrInputStream(sr), ms);
+				AsmCompiler c = new AsmCompiler();
+				c.Run(new AntlrInputStream(sr), ms);
 				ms.Flush();
 
 				// get code
@@ -93,10 +61,9 @@ public static Stream GenerateStreamFromString(string s)
 				// run
 				Cpu cpu = new Cpu(code, 0, 1024, 1024, false);
 				using(StringWriter sw = new StringWriter()){
-	            	cpu.Run(sw);
+					cpu.Run(sw);
 					outputString = sw.ToString();
 				}
-            }
-
-    }
+			}
+	}
 }
