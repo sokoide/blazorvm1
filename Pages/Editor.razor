@@ -1,0 +1,58 @@
+﻿@page "/editor"
+@using MatBlazor
+
+
+<h1>Editor</h1>
+
+@* <p>Editor ver: @version</p> *@
+
+<MatTextField @bind-Value="@codeString" Label="Code" TextArea="true" FullWidth="true" Rows="10"></MatTextField>
+<MatButton OnClick="@(() => dialogIsOpen = true)">Compile and Run</MatButton>
+<MatTextField @bind-Value="@outputString" Label="Output" TextArea="true" FullWidth="true" Rows="10" ReadOnly="true"></MatTextField>
+
+@* <button class="btn btn-primary" @onclick="IncrementVersion">Click me</button> *@
+
+        <MatDialog @bind-IsOpen="@dialogIsOpen">
+            <MatDialogTitle>Compile</MatDialogTitle>
+            <MatDialogContent>
+                <p>Not implemented yet...</p>
+                @* <MatTextField @bind-Value="@dialogMessage"></MatTextField> *@
+            </MatDialogContent>
+            <MatDialogActions>
+                <MatButton OnClick="(e => { dialogIsOpen = false; })">Cancel</MatButton>
+				&nbsp;&nbsp;
+                <MatButton Raised="true" OnClick="CompileRun">Compile Run</MatButton>
+            </MatDialogActions>
+        </MatDialog>
+
+
+@code {
+	@* public string CodeString
+	{
+		get => _codeString;
+		set
+		{
+			_codeString = value;
+			this.StateHasChanged();
+		}
+	}
+
+	private string _codeString; *@
+	private string codeString = @"// sample vm1 assembly
+iconst 42
+call FUNC: 1
+halt
+FUNC:
+load -3
+print
+ret
+";
+	private bool dialogIsOpen = false;
+	private string outputString = "";
+	//private string dialogMessage;
+
+    private void CompileRun()
+    {
+		outputString = DateTime.Now.ToString();
+    }
+}
